@@ -9,7 +9,7 @@ def get_main_website():
     res = requests.get(url)
     res.raise_for_status()
     # return text into BeautifulSoup object
-    return BeautifulSoup(res.content)
+    return BeautifulSoup(res.content, 'lxml')
 
 
 def get_links(soup):
@@ -28,7 +28,7 @@ def loop_links(links):
 def get_website(url):
     res = requests.get(url)
     res.raise_for_status()
-    soup = BeautifulSoup(res.content)
+    soup = BeautifulSoup(res.content, 'lxml')
     return soup
 
 
@@ -63,14 +63,30 @@ def check_frequency(dictionary):
     return frequency_count
 
 
-
 soup = get_main_website()
 get_links(soup)
 master = loop_links(get_links(soup))
-print(check_frequency(master))
+frequency = check_frequency(master)
+
 
 def create_csv(dict):
     with open("data.csv", "w") as outfile:
         writer = csv.writer(outfile)
         writer.writerow(master.keys())
         writer.writerows(zip(*master.values()))
+
+# with open("frequency.csv", "w") as outfile:
+#     writer = csv.DictWriter(outfile)
+#     for key, value in frequency.iteritems():
+#         writer.writerows(frequency.keys())
+#         for x, y in value.iteritems():
+#             writer.writerow(x.values())
+
+
+# writer = csv.writer(open('test.csv','wb'))
+# for key, value in d.iteritems():
+#     ln = [key]
+#     for ik, iv in value.iteritems():
+#         ln.append(ik)
+#         ln.extend([v for v in iv])
+#     writer.writerow(ln)
